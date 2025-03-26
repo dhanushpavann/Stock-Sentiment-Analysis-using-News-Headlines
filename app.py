@@ -113,7 +113,7 @@ st.markdown("---")
 # Footer
 st.markdown("""
     <div style="text-align:center; margin-top:40px;">
-        <p>🚀 Built with <b>Machine Learning</b> & <b>Streamlit</b></p>
-        <p>Created by <a href="https://github.com/yourgithub" target="_blank">Your Name</a></p>
+        <p>🚀 Built with <b>Machine Learning Prediction Model</b></p>
+        <p>Created by <a href="https://github.com/dhanushpavann" target="_blank">Dhanush Pavan</a></p>
     </div>
 """, unsafe_allow_html=True)
