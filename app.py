@@ -4,72 +4,116 @@ import joblib
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 import nltk
+import streamlit.components.v1 as components
 
-# Download NLTK stopwords silently
 nltk.download('stopwords', quiet=True)
 
-# Load pre-trained models with error handling
+# Load pre-trained models
 try:
     lr_classifier = joblib.load('lr_classifier.pkl')
     cv = joblib.load('cv_vectorizer.pkl')
 except FileNotFoundError:
-    st.error("Model files 'lr_classifier.pkl' or 'cv_vectorizer.pkl' not found! Please upload them.")
+    st.error("Model files not found! Please ensure 'lr_classifier.pkl' and 'cv_vectorizer.pkl' are present.")
     st.stop()
 
-# Initialize PorterStemmer
 ps = PorterStemmer()
 
-# Prediction function (unchanged from your notebook)
 def stock_prediction(sample_news):
-    sample_news = re.sub(pattern='[^a-zA-Z]', repl=' ', string=sample_news)  # Remove non-letters
-    sample_news = sample_news.lower()  # Convert to lowercase
-    sample_news_words = sample_news.split()  # Split into words
-    sample_news_words = [word for word in sample_news_words if word not in set(stopwords.words('english'))]  # Remove stopwords
-    final_news = [ps.stem(word) for word in sample_news_words]  # Stem words
-    final_news = ' '.join(final_news)  # Join back into a string
-    temp = cv.transform([final_news]).toarray()  # Transform using CountVectorizer
-    prediction = lr_classifier.predict(temp)[0]  # Predict
+    sample_news = re.sub(pattern='[^a-zA-Z]', repl=' ', string=sample_news)
+    sample_news = sample_news.lower()
+    sample_news_words = sample_news.split()
+    sample_news_words = [word for word in sample_news_words if word not in set(stopwords.words('english'))]
+    final_news = [ps.stem(word) for word in sample_news_words]
+    final_news = ' '.join(final_news)
+    temp = cv.transform([final_news]).toarray()
+    prediction = lr_classifier.predict(temp)[0]
     return prediction
 
-# Streamlit UI Setup
+# Page Config
 st.set_page_config(page_title="Stock Predictor", page_icon="📈", layout="wide")
+
+# Custom CSS for styling and animations
+st.markdown("""
+    <style>
+    .main {
+        background: linear-gradient(135deg, #f0f4f7, #d9e4f5);
+    }
+    .stButton>button {
+        background-color: #1E90FF;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #187bcd;
+        color: white;
+        transform: scale(1.05);
+    }
+    .result-box {
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Lottie animations
+lottie_url_up = "https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"
+lottie_url_down = "https://assets4.lottiefiles.com/packages/lf20_ydo1amjm.json"
 
 # Sidebar
 with st.sidebar:
-    st.title("Stock Prediction Tool")
-    st.write("Predict stock price movements based on news headlines.")
-    st.image("https://img.icons8.com/?size=100&id=111057&format=png&color=000000", caption="Stock Trends", width=80 ,)
+    st.image("https://img.icons8.com/?size=100&id=111057&format=png&color=000000", width=100)
+    st.title("📊 Stock Predictor")
+    st.write("Predict market movements based on news headlines.")
     st.markdown("---")
-# Main Content
-st.title("📈 Stock Price Prediction")
-st.markdown("#### Enter a News Headline to Predict Stock Movement")
+    st.info("Tips: 📝\n\n- Use clear financial headlines.\n- Avoid vague statements.\n- Industry-specific headlines improve accuracy.")
 
-# Input Section
+# Main Content (without dropdown)
+st.title("📈 Stock Price Prediction Based on News")
+
 with st.container():
-    st.subheader("Your Headline")
-    news_input = st.text_input("", placeholder="e.g., 'Tech company launches new product'", key="news_input")
+    st.subheader("Enter a News Headline")
+    news_input = st.text_input("", placeholder="e.g., Tech giant unveils breakthrough innovation")
 
-# Prediction Button and Result
-if st.button("🔍 Predict", type="primary", use_container_width=True):
+if st.button("🔍 Predict", use_container_width=True):
     if news_input:
-        with st.spinner("Analyzing headline..."):
+        with st.spinner("Analyzing the headline..."):
             result = stock_prediction(news_input)
-        # Display result with styling
-        if result:
+
+        if result == 1:
             st.markdown(
-                '<div style="background-color:#33cc33;padding:10px;border-radius:5px;">'
-                '📉 <b>Prediction:</b> Stock price will remain the same or go down</div>',
+                '<div class="result-box" style="background-color:#d4edda; color:#155724;">📈 <b>Prediction:</b> The stock price is likely to go up.</div>',
                 unsafe_allow_html=True
             )
+            components.html(f"""
+                <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                <lottie-player src="{lottie_url_up}" background="transparent" speed="1" style="width: 300px; height: 300px; display: block; margin: auto;" loop autoplay></lottie-player>
+            """, height=300)
+
         else:
             st.markdown(
-                '<div style="background-color:#CC6666;padding:10px;border-radius:5px;">'
-                '📈 <b>Prediction:</b> Stock price will go up</div>',
+                '<div class="result-box" style="background-color:#f8d7da; color:#721c24;">📉 <b>Prediction:</b> The stock price may stay the same or go down.</div>',
                 unsafe_allow_html=True
             )
+            components.html(f"""
+                <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+                <lottie-player src="{lottie_url_down}" background="transparent" speed="1" style="width: 300px; height: 300px; display: block; margin: auto;" loop autoplay></lottie-player>
+            """, height=300)
+
     else:
-        st.warning("Please enter a headline to predict!")
+        st.warning("⚠️ Please enter a headline to get a prediction.")
+
+st.markdown("---")
 
 # Footer
-st.markdown("---")
-st.write("Machine Learning Prediction")
+st.markdown("""
+    <div style="text-align:center; margin-top:40px;">
+        <p>🚀 Built with <b>Machine Learning</b> & <b>Streamlit</b></p>
+        <p>Created by <a href="https://github.com/yourgithub" target="_blank">Your Name</a></p>
+    </div>
+""", unsafe_allow_html=True)
