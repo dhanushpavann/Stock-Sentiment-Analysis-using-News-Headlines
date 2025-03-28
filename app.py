@@ -30,7 +30,7 @@ def stock_prediction(sample_news):
     return prediction
 
 # Page Config
-st.set_page_config(page_title="Stock Predictor", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Sentiment Stocks", page_icon="📈", layout="wide")
 
 # Custom CSS for styling and animations
 st.markdown("""
@@ -67,8 +67,7 @@ lottie_url_down = "https://assets4.lottiefiles.com/packages/lf20_ydo1amjm.json"
 
 # Sidebar
 with st.sidebar:
-    st.image("https://img.icons8.com/?size=100&id=111057&format=png&color=000000", width=100)
-    st.title("📊 Stock Predictor")
+    st.title("📊 Sentiment Stocks")
     st.write("Predict market movements based on news headlines.")
     st.markdown("---")
     st.info("Tips: 📝\n\n- Use clear financial headlines.\n- Avoid vague statements.\n- Industry-specific headlines improve accuracy.")
