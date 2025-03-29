@@ -73,7 +73,7 @@ with st.sidebar:
     st.info("Tips: 📝\n\n- Use clear financial headlines.\n- Avoid vague statements.\n- Industry-specific headlines improve accuracy.")
 
 # Main Content (without dropdown)
-st.title("📈 Stock Price Prediction Based on News")
+st.title("📈 Stock Movement Prediction Based on News")
 
 with st.container():
     st.subheader("Enter a News Headline")
