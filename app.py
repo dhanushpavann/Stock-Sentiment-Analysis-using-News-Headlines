@@ -30,7 +30,7 @@ def stock_prediction(sample_news):
     return prediction
 
 # Page Config
-st.set_page_config(page_title="Stock Predictor", page_icon="📈", layout="wide")
+st.set_page_config(page_title="Sentiment Stocks", page_icon="📈", layout="wide")
 
 # Custom CSS for styling and animations
 st.markdown("""
