@@ -67,8 +67,7 @@ lottie_url_down = "https://assets4.lottiefiles.com/packages/lf20_ydo1amjm.json"
 
 # Sidebar
 with st.sidebar:
-    st.image("https://img.icons8.com/?size=100&id=111057&format=png&color=000000", width=100)
-    st.title("📊 Stock Predictor")
+    st.title("📊 Sentiment Stocks")
     st.write("Predict market movements based on news headlines.")
     st.markdown("---")
     st.info("Tips: 📝\n\n- Use clear financial headlines.\n- Avoid vague statements.\n- Industry-specific headlines improve accuracy.")
@@ -85,7 +84,7 @@ if st.button("🔍 Predict", use_container_width=True):
         with st.spinner("Analyzing the headline..."):
             result = stock_prediction(news_input)
 
-        if result == 1:
+        if result == 0:
             st.markdown(
                 '<div class="result-box" style="background-color:#d4edda; color:#155724;">📈 <b>Prediction:</b> The stock price is likely to go up.</div>',
                 unsafe_allow_html=True
